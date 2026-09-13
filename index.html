@@ -2,18 +2,33 @@
 <html>
 <head>
   <style>
-    html, body {
-      margin: 0;
-      background: transparent;
-      overflow: hidden;
-    }
-    img {
-      width: 150px;
-      display: block;
-    }
+    html, body { margin: 0; background: transparent; overflow: hidden; }
+    img { width: 150px; display: block; }
   </style>
 </head>
 <body>
-  <img src="assets/01.png" alt="chat" />
+  <img id="cat" src="assets/right-1.png" alt="chat" />
+
+  <script>
+    const catImg = document.getElementById('cat');
+
+    const rightFrames = ['assets/right-1.png', 'assets/right-2.png'];
+    const leftFrames = ['assets/left-1.png', 'assets/left-2.png'];
+
+    let currentDirection = 1; // 1 = droite, -1 = gauche
+    let frameIndex = 0;
+
+    // alterne entre les 2 images du sens courant, ~8 fois par seconde
+    setInterval(() => {
+      const frames = currentDirection === 1 ? rightFrames : leftFrames;
+      frameIndex = (frameIndex + 1) % frames.length;
+      catImg.src = frames[frameIndex];
+    }, 125);
+
+    // écoute les changements de direction envoyés par main.js
+    window.electronAPI.onDirectionChange((direction) => {
+      currentDirection = direction;
+    });
+  </script>
 </body>
 </html>

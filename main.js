@@ -1,20 +1,19 @@
 const { app, BrowserWindow, screen } = require('electron');
+const path = require('path');
 
 let win;
-let direction = 1;          // 1 = droite, -1 = gauche
-const speed = 3;            // pixels par tick
+let direction = 1;
+const speed = 3;
 const windowWidth = 200;
-const windowHeight = 200;
 
 function createWindow() {
-  const { width: screenWidth, height: screenHeight } =
-    screen.getPrimaryDisplay().workAreaSize;
+  const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
 
   win = new BrowserWindow({
     width: windowWidth,
-    height: windowHeight,
+    height: 200,
     x: 50,
-    y: screenHeight - windowHeight - 20, // marche sur la barre des tâches
+    y: screenHeight - 220,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -22,6 +21,7 @@ function createWindow() {
     hasShadow: false,
     webPreferences: {
       contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js'),
     },
   });
 
@@ -31,18 +31,12 @@ function createWindow() {
 
 function startWalking(screenWidth) {
   setInterval(() => {
-    if (!win || win.isDestroyed()) return;
-
     const [x, y] = win.getPosition();
     let newX = x + speed * direction;
 
-    // Inverser le sens aux bords
-    if (newX <= 0) {
-      newX = 0;
-      direction = 1;
-    } else if (newX + windowWidth >= screenWidth) {
-      newX = screenWidth - windowWidth;
-      direction = -1;
+    if (newX <= 0 || newX + windowWidth >= screenWidth) {
+      direction *= -1;
+      win.webContents.send('direction-change', direction); // on prévient index.html
     }
 
     win.setPosition(newX, y);
