@@ -1,20 +1,24 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, screen } = require('electron');
 
 function createWindow() {
+  const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
+
   const win = new BrowserWindow({
     width: 200,
     height: 200,
-    frame: false,        // pas de barre de titre ni de bordure
-    transparent: true,   // fond transparent (on ne voit que le chat)
-    alwaysOnTop: true,   // toujours au-dessus des autres fenêtres
-    skipTaskbar: true,   // n'apparaît pas dans la barre des tâches
+    x: 50,                          // position de départ : proche du bord gauche
+    y: screenHeight - 220,          // proche du bas de l'écran (comme s'il marchait sur la barre des tâches)
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    skipTaskbar: true,
     hasShadow: false,
     webPreferences: {
       contextIsolation: true,
     },
   });
 
-  win.setIgnoreMouseEvents(false); // on garde les clics actifs pour l'instant
+  win.setIgnoreMouseEvents(false);
   win.loadFile('index.html');
 }
 
