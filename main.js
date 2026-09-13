@@ -3,17 +3,18 @@ const path = require('path');
 
 let win;
 let direction = 1;
-const speed = 3;
+const speed = 2;
 const windowWidth = 200;
+const windowHeight = 340; // 200 pour le chat + 140 pour la bulle au-dessus
 
 function createWindow() {
   const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
 
   win = new BrowserWindow({
     width: windowWidth,
-    height: 200,
+    height: windowHeight,
     x: 50,
-    y: screenHeight - 220,
+    y: screenHeight - windowHeight - 20, // garde le chat au même endroit visuellement (20px du bas)
     frame: false,
     transparent: true,
     alwaysOnTop: true,
@@ -36,7 +37,7 @@ function startWalking(screenWidth) {
 
     if (newX <= 0 || newX + windowWidth >= screenWidth) {
       direction *= -1;
-      win.webContents.send('direction-change', direction); // on prévient index.html
+      win.webContents.send('direction-change', direction);
     }
 
     win.setPosition(newX, y);

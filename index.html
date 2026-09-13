@@ -3,11 +3,28 @@
 <head>
   <style>
     html, body { margin: 0; background: transparent; overflow: hidden; }
-    img { width: 150px; display: block; }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      justify-content: flex-end; /* le chat reste collé en bas */
+    }
+
+    #bubble {
+      width: 180px;
+      margin-bottom: -10px; /* rapproche légèrement la bulle du chat */
+    }
+
+    #cat { width: 150px; display: block; }
   </style>
 </head>
 <body>
-  <img id="cat" src="assets/right-1.png" alt="chat" />
+  <div id="container">
+    <img id="bubble" src="assets/bubble.png" alt="bulle de rappel" />
+    <img id="cat" src="assets/right-1.png" alt="chat" />
+  </div>
 
   <script>
     const catImg = document.getElementById('cat');
@@ -15,17 +32,15 @@
     const rightFrames = ['assets/right-1.png', 'assets/right-2.png'];
     const leftFrames = ['assets/left-1.png', 'assets/left-2.png'];
 
-    let currentDirection = 1; // 1 = droite, -1 = gauche
+    let currentDirection = 1;
     let frameIndex = 0;
 
-    // alterne entre les 2 images du sens courant, ~8 fois par seconde
     setInterval(() => {
       const frames = currentDirection === 1 ? rightFrames : leftFrames;
       frameIndex = (frameIndex + 1) % frames.length;
       catImg.src = frames[frameIndex];
     }, 125);
 
-    // écoute les changements de direction envoyés par main.js
     window.electronAPI.onDirectionChange((direction) => {
       currentDirection = direction;
     });
